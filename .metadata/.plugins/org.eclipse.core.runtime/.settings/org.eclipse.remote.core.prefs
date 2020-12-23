@@ -1,0 +1,11 @@
+connections/org.eclipse.remote.serial.core.connectionType/Console_Terminal/serial.baudRate=9
+connections/org.eclipse.remote.serial.core.connectionType/Console_Terminal/serial.byteSize=3
+connections/org.eclipse.remote.serial.core.connectionType/Console_Terminal/serial.parity=0
+connections/org.eclipse.remote.serial.core.connectionType/Console_Terminal/serial.portName=COM4
+connections/org.eclipse.remote.serial.core.connectionType/Console_Terminal/serial.stopBits=0
+connections/org.eclipse.remote.serial.core.connectionType/Test_Terminal/serial.baudRate=9
+connections/org.eclipse.remote.serial.core.connectionType/Test_Terminal/serial.byteSize=3
+connections/org.eclipse.remote.serial.core.connectionType/Test_Terminal/serial.parity=0
+connections/org.eclipse.remote.serial.core.connectionType/Test_Terminal/serial.portName=COM4
+connections/org.eclipse.remote.serial.core.connectionType/Test_Terminal/serial.stopBits=0
+eclipse.preferences.version=1

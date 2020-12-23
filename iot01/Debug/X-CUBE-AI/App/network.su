@@ -1,0 +1,9 @@
+network.c:441:9:network_configure_activations	24	static
+network.c:474:9:network_configure_weights	24	static
+network.c:519:9:ai_network_get_info	136	static
+network.c:566:10:ai_network_get_error	16	static
+network.c:572:10:ai_network_create	24	static
+network.c:582:11:ai_network_destroy	16	static
+network.c:588:9:ai_network_init	24	static
+network.c:605:8:ai_network_run	24	static
+network.c:612:8:ai_network_forward	16	static

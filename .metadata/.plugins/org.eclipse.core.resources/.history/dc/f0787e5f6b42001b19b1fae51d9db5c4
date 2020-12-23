@@ -1,0 +1,15 @@
+/*
+ * examples.c
+ *
+ *  Created on: Dec 20, 2020
+ *      Author: kim
+ */
+
+#include "main.h"
+#include "examples.h"
+
+void LED2(uint32_t interval)
+{
+	HAL_GPIO_TogglePin(URLED2_GPIO_Port, URLED2_Pin);
+	HAL_Delay(interval);
+}

@@ -1,0 +1,4 @@
+examples.c:11:6:LED1_Toggle	16	static
+examples.c:17:6:LED2_Toggle	16	static
+examples.c:25:5:__io_putchar	16	static
+examples.c:32:5:__io_getchar	16	static

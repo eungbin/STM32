@@ -1,0 +1,98 @@
+18:02:27 **** Incremental Build of configuration Debug for project iot01 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DDEBUG -DSTM32L4S5xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -I../X-CUBE-AI/App -I../Middlewares/ST/AI/Inc -I../X-CUBE-MEMS1/Target -I../Drivers/BSP/Components/lsm6dsl -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:164:15: error: invalid storage class for function 'AI_Init'
+   static void AI_Init(ai_handle w_addr, ai_handle act_addr) {
+               ^~~~~~~
+../Core/Src/main.c:304:13: error: invalid storage class for function 'MX_CRC_Init'
+ static void MX_CRC_Init(void)
+             ^~~~~~~~~~~
+../Core/Src/main.c:335:13: error: invalid storage class for function 'MX_USART1_UART_Init'
+ static void MX_USART1_UART_Init(void)
+             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:383:13: error: invalid storage class for function 'MX_GPIO_Init'
+ static void MX_GPIO_Init(void)
+             ^~~~~~~~~~~~
+../Core/Src/main.c:433:13: error: invalid storage class for function 'AI_Init'
+ static void AI_Init(ai_handle w_addr, ai_handle act_addr) {
+             ^~~~~~~
+../Core/Src/main.c:433:13: error: redefinition of 'AI_Init'
+../Core/Src/main.c:164:15: note: previous definition of 'AI_Init' was here
+   static void AI_Init(ai_handle w_addr, ai_handle act_addr) {
+               ^~~~~~~
+../Core/Src/main.c:454:13: error: invalid storage class for function 'AI_Run'
+ static void AI_Run(float *pIn, float *pOut) {
+             ^~~~~~
+../Core/Src/main.c:474:17: error: invalid storage class for function 'argmax'
+ static uint32_t argmax(const float * values, uint32_t len) {
+                 ^~~~~~
+../Core/Src/main.c:485:13: error: invalid storage class for function 'MEMS_Init'
+ static void MEMS_Init(void)
+             ^~~~~~~~~
+../Core/Src/main.c: In function 'MEMS_Init':
+../Core/Src/main.c:503:17: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint8_t * {aka unsigned char *}' [-Wformat=]
+   printf("id : %d\n", &id);
+                ~^     ~~~
+                %hhn
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:543:1: error: expected declaration or statement at end of input
+ }
+ ^
+../Core/Src/main.c: At top level:
+../Core/Src/main.c:78:13: warning: 'MX_GPIO_Init' used but never defined
+ static void MX_GPIO_Init(void);
+             ^~~~~~~~~~~~
+../Core/Src/main.c:79:13: warning: 'MX_USART1_UART_Init' used but never defined
+ static void MX_USART1_UART_Init(void);
+             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:80:13: warning: 'MX_CRC_Init' used but never defined
+ static void MX_CRC_Init(void);
+             ^~~~~~~~~~~
+../Core/Src/main.c:82:13: warning: 'AI_Init' declared 'static' but never defined [-Wunused-function]
+ static void AI_Init(ai_handle w_addr, ai_handle act_addr);
+             ^~~~~~~
+../Core/Src/main.c:83:13: warning: 'AI_Run' used but never defined
+ static void AI_Run(float *pIn, float *pOut);
+             ^~~~~~
+../Core/Src/main.c:84:17: warning: 'argmax' used but never defined
+ static uint32_t argmax(const float * values, uint32_t len);
+                 ^~~~~~
+../Core/Src/main.c:85:13: warning: 'MEMS_Init' used but never defined
+ static void MEMS_Init(void);
+             ^~~~~~~~~
+../Core/Src/main.c:534:6: warning: 'Error_Handler' defined but not used [-Wunused-function]
+ void Error_Handler(void)
+      ^~~~~~~~~~~~~
+../Core/Src/main.c:522:6: warning: 'HAL_GPIO_EXTI_Callback' defined but not used [-Wunused-function]
+ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+      ^~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:485:13: warning: 'MEMS_Init' defined but not used [-Wunused-function]
+ static void MEMS_Init(void)
+             ^~~~~~~~~
+../Core/Src/main.c:474:17: warning: 'argmax' defined but not used [-Wunused-function]
+ static uint32_t argmax(const float * values, uint32_t len) {
+                 ^~~~~~
+../Core/Src/main.c:454:13: warning: 'AI_Run' defined but not used [-Wunused-function]
+ static void AI_Run(float *pIn, float *pOut) {
+             ^~~~~~
+../Core/Src/main.c:433:13: warning: 'AI_Init' defined but not used [-Wunused-function]
+ static void AI_Init(ai_handle w_addr, ai_handle act_addr) {
+             ^~~~~~~
+../Core/Src/main.c:383:13: warning: 'MX_GPIO_Init' defined but not used [-Wunused-function]
+ static void MX_GPIO_Init(void)
+             ^~~~~~~~~~~~
+../Core/Src/main.c:335:13: warning: 'MX_USART1_UART_Init' defined but not used [-Wunused-function]
+ static void MX_USART1_UART_Init(void)
+             ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:304:13: warning: 'MX_CRC_Init' defined but not used [-Wunused-function]
+ static void MX_CRC_Init(void)
+             ^~~~~~~~~~~
+../Core/Src/main.c:247:6: warning: 'SystemClock_Config' defined but not used [-Wunused-function]
+ void SystemClock_Config(void)
+      ^~~~~~~~~~~~~~~~~~
+make: *** [Core/Src/subdir.mk:43: Core/Src/main.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+
+18:02:28 Build Failed. 11 errors, 18 warnings. (took 1s.22ms)
+
