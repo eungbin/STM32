@@ -1,0 +1,3 @@
+am2302.c:5:9:AM2302ReadData	104	static
+am2302.c:83:10:WaitForLow	24	static
+am2302.c:90:10:WaitForHigh	24	static

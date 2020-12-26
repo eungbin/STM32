@@ -1,0 +1,15 @@
+/*
+ * dht22.h
+ *
+ *  Created on: Dec 24, 2020
+ *      Author: kim
+ */
+
+#ifndef INC_DHT22_H_
+#define INC_DHT22_H_
+
+void DHT22_Start (void);
+uint8_t DHT22_Check_Response (void);
+uint8_t DHT22_Read (void);
+
+#endif /* INC_DHT22_H_ */

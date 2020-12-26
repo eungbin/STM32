@@ -1,0 +1,35 @@
+/*
+ * am2302.h
+ *
+ *  Created on: Dec 24, 2020
+ *      Author: kim
+ */
+
+#ifndef INC_AM2302_H_
+#define INC_AM2302_H_
+
+#define AM2302_SUCCESS                0      // return value when reading was success
+#define AM2302_NOT_REPLY              1      // return value when AM2302 did not send low signal
+#define AM2302_SIGNAL_ERR             2      // return value when AM2302 did not send high signal
+#define AM2302_DATA_NOT_START         3      // return value when AM2302 did not send
+#define AM2302_CHKSUM_ERR                       4      // return value when checksum is not correct
+#define AM2302_DATA_HIGH_ERR          100    // return value when AM2302 signal high time was not proper
+
+#define AM2302_MAX_REPLY_TIME         100                    // max repeat times to wait AM2302 to reply
+#define AM2302_SIGNAL_LENGTH          (120 + 120 * 0.1)      // max repeat times for AM2302 reply 50uS
+#define AM2302_DATA_LOW_LENGTH        (100 + 100 * 0.1)      // max repeat times for AM2302 low signal 50uS
+#define AM2302_DATA_HIGH_LENGTH_1     AM2302_SIGNAL_LENGTH   // max repeat times for AM2302 high signal 1, 70 uS
+#define AM2302_DATA_HIGH_LENGTH_0     (AM2302_DATA_HIGH_LENGTH_1 / 2)      // max repeat times for AM2302 high signal 1, 26 uS
+
+#define AM2302_DATA_BITS              40
+
+typedef struct {
+    int16_t humid, temp;
+    uint8_t checksum;
+}AM2302DATA;
+
+uint8_t AM2302ReadData(AM2302DATA *pData);
+uint32_t WaitForLow(uint32_t max);
+uint32_t WaitForHigh(uint32_t max);
+
+#endif /* INC_AM2302_H_ */

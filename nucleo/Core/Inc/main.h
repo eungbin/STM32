@@ -54,7 +54,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+extern uint8_t intFlag;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -63,8 +63,11 @@ void Error_Handler(void);
 #define URBTN_EXTI_IRQn EXTI4_15_IRQn
 #define URLED2_Pin GPIO_PIN_5
 #define URLED2_GPIO_Port GPIOA
+#define Sensor_Pin GPIO_PIN_9
+#define Sensor_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-
+#define NO_INTERRUPT                  0
+#define INT_TIM2_AM2302               (1 << 0)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

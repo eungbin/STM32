@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="WHILE"/>
+		<item key="selection" value="pin"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="while"/>
-			<item value="Begin 4"/>
-			<item value="Begin 2"/>
-			<item value="rx_data"/>
-			<item value="buf"/>
-			<item value="printf"/>
-			<item value="BEGIN 0"/>
-			<item value="BEGIN 2"/>
-			<item value="BEGIN 1"/>
+			<item value="PIN"/>
+			<item value="GPIO_PIN_1"/>
+			<item value="delay"/>
+			<item value="Set_Pin"/>
+			<item value="Set"/>
+			<item value="GPIO_InitStruct"/>
 			<item value="begin 2"/>
-			<item value="11"/>
-			<item value="user code begin pv"/>
-			<item value="user code begin"/>
-			<item value="LSM6DSL_ID"/>
-			<item value="i2c"/>
+			<item value="debug"/>
+			<item value="de"/>
+			<item value="core"/>
+			<item value="DWT"/>
+			<item value="dwt"/>
+			<item value="GPIO_Pin1"/>
+			<item value="TYPE_DHT22"/>
+			<item value="crh"/>
 		</list>
 		<list key="replacehistory">
+			<item value="HAL_Delay"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
