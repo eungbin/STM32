@@ -1,0 +1,171 @@
+/*
+ * uart3.c
+ *
+ *  참고 : https://rs29.tistory.com/10#recentComments
+ */
+
+#include "main.h"
+#include <stdio.h>
+#include <string.h>
+
+/* USER CODE BEGIN PV */
+uint8_t mise_buffer[32];
+uint8_t mise_send_buffer[7] = {0x42,0x4d,0};
+/* USER CODE END PV */
+
+/* USER CODE BEGIN PFP */
+void print_MISE(void);
+void write_MISE(char* cmd);
+/* USER CODE END PFP */
+
+/* Initialize all configured peripherals */
+MX_DMA_Init();
+MX_USART3_UART_Init();
+
+/* USER CODE BEGIN 2 */
+if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
+{
+	printf("fail\r\n");
+}
+
+
+write_MISE("Passive");
+  /* USER CODE END 2 */
+
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 9600;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
+
+}
+
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel2_3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	if(huart->Instance == USART3) {
+		print_MISE();
+	}
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart->Instance==USART3)
+	{
+
+	}
+}
+
+// 실제 측정된 값을 출력해주는 함수
+void print_MISE(void)
+{
+	/*
+	combine_value : 8비트씩 나눠진 데이터를 하나로 합치는데 사용할 변수
+	check_byte_receive : 센서로부터 수신 받은 체크 코드(30,31)를 하나로 합치는데 사용할 변수
+	check_byte_calculate : 센서로부터 수신 받은 0~29 까지의 데이터를 합산해 체크 코드와 비교
+	*/
+	uint16_t combine_value, check_byte_receive, check_byte_calculate=0;
+
+	check_byte_receive=mise_buffer[30]<<8|mise_buffer[31];
+	for(uint8_t i=0;i<30;i++)
+	{
+		check_byte_calculate+=mise_buffer[i];
+	}
+
+	//센서로부터 수신 받은 체크 코드(30,31)와 수신 받은 0~29까지의 데이터 합산이 일치할 때만 출력
+	if(check_byte_receive==check_byte_calculate)
+	{
+		printf("PM1.0 : %d	",(combine_value=(mise_buffer[10]<<8)|mise_buffer[11]));
+		printf("PM2.5 : %d	",(combine_value=(mise_buffer[12]<<8)|mise_buffer[13]));
+		printf("PM10 : %d	",(combine_value=(mise_buffer[14]<<8)|mise_buffer[15]));
+		printf("0.3um : %d	",(combine_value=(mise_buffer[16]<<8)|mise_buffer[17]));
+		printf("0.5um : %d	",(combine_value=(mise_buffer[18]<<8)|mise_buffer[19]));
+		printf("1.0um : %d	",(combine_value=(mise_buffer[20]<<8)|mise_buffer[21]));
+		printf("2.5um : %d	",(combine_value=(mise_buffer[22]<<8)|mise_buffer[23]));
+		printf("5.0um : %d	",(combine_value=(mise_buffer[24]<<8)|mise_buffer[25]));
+		printf("10.0um : %d\r\n",(combine_value=(mise_buffer[26]<<8)|mise_buffer[27]));
+	}
+	else
+	{
+	}
+}
+
+// 미세먼지 센서 상태변경 함수
+void write_MISE(char* cmd)
+{
+	//1~5번째까지의 배열의 합을 필요로 하는 6, 7번째 배열인 verify byte1, 2에 값을 저장하기 위해 사용할 변수
+	uint16_t verify_byte=0;
+
+	//사용자가 입력한 명령어(문자열)를 비교하여 해당하는 명령어에 따라
+	//센서로 전송할 데이터 배열을 채운다
+	if(strcmp(cmd,"Read")==0)
+	{
+		mise_send_buffer[2]=0xe2;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x00;
+		printf("if's Read\r\n");
+	}
+	else if(strcmp(cmd,"Passive")==0)
+	{
+		mise_send_buffer[2]=0xe1;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x00;
+		printf("if's Passive\r\n");
+	}
+	else if(strcmp(cmd,"Active")==0)
+	{
+		mise_send_buffer[2]=0xe1;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x01;
+		printf("if's Active\r\n");
+
+	}
+	for(uint8_t i=0;i<5;i++)
+	{
+		verify_byte+=mise_send_buffer[i];	//verify byte1,2=배열 1~5(buffer[0]~[4])까지의 합
+	}
+	mise_send_buffer[5]=verify_byte>>8;		//배열 1~5까지의 합을 상하로 나누어 저장
+	mise_send_buffer[6]=verify_byte;
+
+	//센서와의 통신에 사용할 UART 라인이 준비 상태가 될 때까지 대기
+	while(HAL_UART_GetState(&huart3)!=HAL_UART_STATE_READY)
+	{
+	}
+
+	//인터럽트를 이용해 센서에 명령어 전송
+	if(HAL_UART_Transmit_IT(&huart3,(uint8_t*)mise_send_buffer,7)!=HAL_OK)
+	{
+
+	}
+
+	printf("%d\r\n", mise_send_buffer);
+}

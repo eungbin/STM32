@@ -5,3 +5,4 @@
 1608791180376	Delete resource 'STM32F103DHT22'
 1608793887613	Delete resource 'nucleo/Core/Src/dht.c'
 1608793889856	Delete resource 'nucleo/Core/Inc/dht.h'
+1608976211658	Delete resource 'nucleo/Core/Src/PIRsensor'

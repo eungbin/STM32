@@ -26,7 +26,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "SerLCD.h"
+#include "i2c.h"
+#include "usart.h"
+#include "dma.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,12 +41,26 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define FALSE 0
+#define TRUE 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+uint8_t pir_status = FALSE;	//FALSE->PM2008, TRUE->OTHER
 
+uint8_t mise_buffer[32];
+uint8_t mise_send_buffer[7] = {0x42,0x4d,0};
+
+uint8_t co2_buffer[13];
+uint8_t co2_result_buffer[9];
+
+uint8_t pm2_5 = 0;
+uint8_t pm10 = 0;
+char s_pm2_5[3] = "";
+char s_pm10[3] = "";
+
+uint8_t counter = 0;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -52,7 +71,11 @@ osThreadId defaultTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+void vTask1(void *pvParameters);
+void vTask2(void *pvParameters);
 
+void print_MISE(void);
+void write_MISE(char* cmd);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
@@ -82,7 +105,15 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
+	xTaskCreate(vTask1,		/* Pointer to the function that implements the task. */
+					"Task 1",	/* text name */
+					128,		/* stack depth */
+					NULL,		/* task parameter. */
+					3,			/* task priority */
+					NULL );		/* task handle. */
 
+		/* Create the other task in exactly the same way. */
+	xTaskCreate( vTask2, "Task 2", 128, NULL, 3, NULL );
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -132,7 +163,179 @@ void StartDefaultTask(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void vTask1( void *pvParameters )
+{
+	if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
+	{
+		printf("fail\r\n");
+	}
 
+
+	write_MISE("Passive");
+	/* infinite loop. */
+	for( ;; )
+	{
+		HAL_UART_Receive_IT(&huart4, co2_buffer, 12);
+	}
+}
+
+
+void vTask2( void *pvParameters )
+{
+	/* infinite loop. */
+	for( ;; )
+	{
+		displayInit(&hi2c1);
+		if(!pir_status) {
+			displayWriteString("PM2.5 : ");
+			displayWriteString(s_pm2_5);
+			displaySetCursor(0, 1);
+			displayWriteString("PM10  : ");
+			displayWriteString(s_pm10);
+		} else {
+			displayWriteString("CO2 : ");
+			displayWriteString(co2_result_buffer);
+		}
+		counter++;
+		if(counter >= 5) {
+			counter = 0;
+			pir_status = ~pir_status;
+		}
+//		printf("TEST\r\n");
+		HAL_Delay(1000);
+	}
+}
+
+void print_MISE(void)
+{
+	uint16_t combine_value, check_byte_receive, check_byte_calculate=0;
+
+	check_byte_receive=mise_buffer[30]<<8|mise_buffer[31];
+	for(uint8_t i=0;i<30;i++)
+	{
+		check_byte_calculate+=mise_buffer[i];
+	}
+
+	if(check_byte_receive==check_byte_calculate)
+	{
+		printf("PM1.0 : %d	",(combine_value=(mise_buffer[10]<<8)|mise_buffer[11]));
+		printf("PM2.5 : %d	",(combine_value=(mise_buffer[12]<<8)|mise_buffer[13]));
+		printf("PM10 : %d	",(combine_value=(mise_buffer[14]<<8)|mise_buffer[15]));
+		printf("0.3um : %d	",(combine_value=(mise_buffer[16]<<8)|mise_buffer[17]));
+		printf("0.5um : %d	",(combine_value=(mise_buffer[18]<<8)|mise_buffer[19]));
+		printf("1.0um : %d	",(combine_value=(mise_buffer[20]<<8)|mise_buffer[21]));
+		printf("2.5um : %d	",(combine_value=(mise_buffer[22]<<8)|mise_buffer[23]));
+		printf("5.0um : %d	",(combine_value=(mise_buffer[24]<<8)|mise_buffer[25]));
+		printf("10.0um : %d\r\n",(combine_value=(mise_buffer[26]<<8)|mise_buffer[27]));
+		pm2_5 = combine_value=((mise_buffer[12]<<8)|mise_buffer[13]);
+		pm10 = combine_value=((mise_buffer[14]<<8)|mise_buffer[15]);
+	}
+	else
+	{
+	}
+}
+
+void write_MISE(char* cmd)
+{
+	uint16_t verify_byte=0;
+
+	printf("Enter the write_MISE\r\n");
+
+	if(strcmp(cmd,"Read")==0)
+	{
+		mise_send_buffer[2]=0xe2;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x00;
+		printf("if's Read\r\n");
+	}
+	else if(strcmp(cmd,"Passive")==0)
+	{
+		mise_send_buffer[2]=0xe1;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x00;
+		printf("if's Passive\r\n");
+	}
+	else if(strcmp(cmd,"Active")==0)
+	{
+		mise_send_buffer[2]=0xe1;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x01;
+		printf("if's Active\r\n");
+
+	}
+	else if(strcmp(cmd,"Sleep")==0)
+	{
+		mise_send_buffer[2]=0xe4;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x00;
+		printf("if's Sleep\r\n");
+	}
+	else if(strcmp(cmd,"WakeUp")==0)
+	{
+		mise_send_buffer[2]=0xe4;
+		mise_send_buffer[3]=0x00;
+		mise_send_buffer[4]=0x01;
+		printf("if's WakeUp\r\n");
+	}
+	for(uint8_t i=0;i<5;i++)
+	{
+		verify_byte+=mise_send_buffer[i];
+	}
+	mise_send_buffer[5]=verify_byte>>8;
+	mise_send_buffer[6]=verify_byte;
+
+	while(HAL_UART_GetState(&huart3)!=HAL_UART_STATE_READY)
+	{
+	}
+
+	if(HAL_UART_Transmit_IT(&huart3,(uint8_t*)mise_send_buffer,7)!=HAL_OK)
+	{
+
+	}
+	if(strcmp(cmd,"Read")==0)
+	{
+		while(HAL_UART_GetState(&huart3)!=HAL_UART_STATE_READY)
+		{
+		}
+		if(HAL_UART_Receive_IT(&huart3,mise_send_buffer, 32)!=HAL_OK)
+		{
+
+		}
+	}
+
+	printf("%d\r\n", mise_send_buffer);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	if(huart->Instance == USART3) {
+		print_MISE();
+		sprintf(s_pm2_5, "%d", pm2_5);
+		sprintf(s_pm10, "%d", pm10);
+	}
+
+	if(huart->Instance == USART4) {
+		for(int i=0; i<9; i++) {
+			co2_result_buffer[i] = co2_buffer[i+1];
+		}
+		printf("%s\r\n", co2_result_buffer);
+	}
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart->Instance==USART3)
+	{
+
+	}
+}
+
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+//{
+//  if(htim->Instance == TIM7)
+//  {
+//    printf("5�???? �?????��?��...\r\n");
+//  }
+//}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

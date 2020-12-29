@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+#include <SerLCD.h>
 
 /* USER CODE END Includes */
 
@@ -44,6 +45,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim16;
 
@@ -63,10 +66,17 @@ uint8_t mise_buffer[32];
 uint8_t mise_send_buffer[7] = {0x42,0x4d,0};
 uint8_t receive_complete=0;
 uint8_t sleep_mode = 0;
+uint8_t pm2_5 = 0;
+uint8_t pm10 = 0;
+char s_pm2_5[3] = "";
+char s_pm10[3] = "";
 
 int loop_value = 1;
 int list_value = 0;
 int i = 0;
+
+uint8_t status_lcd = 0;
+uint8_t lcd_counter = 0;
 
 /* USER CODE END PV */
 
@@ -78,6 +88,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM16_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 void print_MISE(void);
@@ -98,79 +109,6 @@ int __io_getchar(void) {
 
 	return 1;
 }
-
-//void delay(uint16_t time) {
-//	__HAL_TIM_SET_COUNTER(&htim2, 0);
-//	while ((__HAL_TIM_GET_COUNTER(&htim2))<time);
-//}
-//
-//uint8_t Rh_byte1, Rh_byte2, Temp_byte1, Temp_byte2;
-//uint16_t SUM, RH, TEMP;
-
-//float Temperature = 0;
-//float Humidity = 0;
-//uint8_t Presence = 0;
-//
-//void Set_Pin_Output(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin) {
-//	GPIO_InitTypeDef GPIO_InitStruct = {0};
-//	GPIO_InitStruct.Pin = GPIO_Pin;
-//	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//	HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
-//}
-//
-//void Set_Pin_Input(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin) {
-//	GPIO_InitTypeDef GPIO_InitStruct = {0};
-//	GPIO_InitStruct.Pin = GPIO_Pin;
-//	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-//	GPIO_InitStruct.Pull = GPIO_NOPULL;
-//	HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
-//}
-
-//#define DHT22_PORT GPIOA
-//#define DHT22_PIN GPIO_PIN_1
-//
-//void DHT22_Start(void) {
-//	Set_Pin_Output(DHT22_PORT, DHT22_PIN);
-//	HAL_GPIO_WritePin(DHT22_PORT, DHT22_PIN, 0);
-//	HAL_Delay(1200);
-//
-//	HAL_GPIO_WritePin(DHT22_PORT, DHT22_PIN, 1);
-//	HAL_Delay(20);
-//
-//	Set_Pin_Input(DHT22_PORT, DHT22_PIN);
-//}
-
-//uint8_t DHT22_Check_Response(void) {
-//	uint8_t Response = 0;
-//	HAL_Delay(40);
-//	if(!(HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN))) {
-//		HAL_Delay(80);
-//
-//		if((HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN))) Response = 1;
-//		else Response = -1;
-//	}
-//
-////	while((HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN)));
-//	return Response;
-//}
-
-//uint8_t DHT22_Read(void) {
-//	uint8_t i, j;
-//
-//	for(j=0; j<8; j++) {
-//		while(!(HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN)));
-//		HAL_Delay(40);
-//
-//		if(!(HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN))) {
-//			i &= ~(1<<(7-j));
-//		} else {
-//			i |= (1<<(7-j));
-//		}
-////		while((HAL_GPIO_ReadPin(DHT22_PORT, DHT22_PIN)));
-//	}
-//	return i;
-//}
 
 /* USER CODE END 0 */
 
@@ -207,17 +145,21 @@ int main(void)
   MX_TIM2_Init();
   MX_USART3_UART_Init();
   MX_TIM16_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim2);
   HAL_UART_Receive_IT(&huart2, &rx_data, 1);
 
-  if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
-  {
-  	  printf("fail\r\n");
-  }
+//  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, RESET);
 
+//  if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
+//  {
+//  	  printf("fail\r\n");
+//  }
+//
+//
+//  write_MISE("Passive");
 
-  write_MISE("Passive");
 //  HAL_Delay(2000);
   /* USER CODE END 2 */
 
@@ -240,6 +182,7 @@ int main(void)
 //		  printf("Detected!!!\r\n");
 //	  else
 //		  printf("No Detected...\r\n");
+//	  HAL_Delay(500);
 
 
 //	  if(led_status == TRUE) {
@@ -257,21 +200,6 @@ int main(void)
 //	  scanf("%c", rx_data);
 //	  HAL_Delay(500);
 
-//	  DHT22_Start();
-//	  Presence = DHT22_Check_Response();
-//	  Rh_byte1 = DHT22_Read();
-//	  Rh_byte2 = DHT22_Read();
-//	  Temp_byte1 = DHT22_Read();
-//	  Temp_byte2 = DHT22_Read();
-//	  SUM = DHT22_Read();
-//
-//	  TEMP = ((Temp_byte1<<8)|Temp_byte2);
-//	  RH = ((Rh_byte1<<8)|Rh_byte2);
-//
-//	  Temperature = (float)(TEMP/10);
-//	  Humidity = (float)(RH/10);
-//	  printf("%d\r\n", TEMP);   //65535
-//	  printf("%d\r\n", Temperature);
 
 //	  HAL_Delay(3000);
 
@@ -279,7 +207,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  printf("Main Loop...\r\n");
+//	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, SET);
+//	  HAL_Delay(10000);
+//	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, RESET);
+//	  HAL_Delay(20000);
+
+	  status_lcd = displayInit(&hi2c1);
+	  if (HAL_GPIO_ReadPin(Sensor_GPIO_Port, Sensor_Pin))
+		  displayWriteString("Detected!!!");
+	  else
+		  displayWriteString("No Detected...");
+	  HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -297,8 +235,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
@@ -319,12 +259,59 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_I2C1;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x2000090E;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
@@ -508,6 +495,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1|URLED2_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : URBTN_Pin */
   GPIO_InitStruct.Pin = URBTN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -526,6 +516,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Sensor_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Relay_Pin */
+  GPIO_InitStruct.Pin = Relay_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Relay_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
@@ -561,9 +558,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 //		HAL_UART_Transmit(&huart2, &rx_data, 1, 1);
 	}
 
-	if(huart->Instance == USART3) {
-		print_MISE();
-	}
+//	if(huart->Instance == USART3) {
+//		print_MISE();
+//		printf("%d\r\n", pm2_5);
+//		sprintf(s_pm2_5, "%d", pm2_5);
+//	}
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
@@ -607,6 +606,9 @@ void print_MISE(void)
 		printf("2.5um : %d	",(combine_value=(mise_buffer[22]<<8)|mise_buffer[23]));
 		printf("5.0um : %d	",(combine_value=(mise_buffer[24]<<8)|mise_buffer[25]));
 		printf("10.0um : %d\r\n",(combine_value=(mise_buffer[26]<<8)|mise_buffer[27]));
+		pm2_5 = combine_value=((mise_buffer[12]<<8)|mise_buffer[13]);
+//		sprintf(s_pm2_5, "%d", pm2_5);
+//		pm10 = combine_value=((mise_buffer[14]<<8)|mise_buffer[15]);
 	}
 	else
 	{

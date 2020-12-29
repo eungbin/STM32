@@ -1,8 +1,8 @@
-17:51:32 **** Incremental Build of configuration Debug for project nucleo ****
+17:06:24 **** Incremental Build of configuration Debug for project nucleo ****
 make -j8 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F072xB -DDEBUG -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.c: In function '__io_getchar':
-../Core/Src/main.c:97:31: warning: passing argument 2 of 'HAL_UART_Receive_IT' makes pointer from integer without a cast [-Wint-conversion]
+../Core/Src/main.c:108:31: warning: passing argument 2 of 'HAL_UART_Receive_IT' makes pointer from integer without a cast [-Wint-conversion]
   HAL_UART_Receive_IT(&huart2, rx_data, 1);
                                ^~~~~~~
 In file included from ../Core/Inc/stm32f0xx_hal_conf.h:288:0,
@@ -13,7 +13,7 @@ In file included from ../Core/Inc/stm32f0xx_hal_conf.h:288:0,
  HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
                    ^~~~~~~~~~~~~~~~~~~
 ../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
-../Core/Src/main.c:555:31: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+../Core/Src/main.c:552:31: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
     HAL_UART_Transmit(&huart2, &buf, (list_value-1), 1);
                                ^
 In file included from ../Core/Inc/stm32f0xx_hal_conf.h:288:0,
@@ -23,12 +23,12 @@ In file included from ../Core/Inc/stm32f0xx_hal_conf.h:288:0,
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:1491:19: note: expected 'uint8_t * {aka unsigned char *}' but argument is of type 'uint8_t (*)[1000] {aka unsigned char (*)[1000]}'
  HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
                    ^~~~~~~~~~~~~~~~~
-../Core/Src/main.c:557:14: warning: multi-character character constant [-Wmultichar]
+../Core/Src/main.c:554:14: warning: multi-character character constant [-Wmultichar]
      buf[i] = 'null';
               ^~~~~~
-../Core/Src/main.c:557:14: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+../Core/Src/main.c:554:14: warning: large integer implicitly truncated to unsigned type [-Woverflow]
 ../Core/Src/main.c: In function 'write_MISE':
-../Core/Src/main.c:684:11: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint8_t * {aka unsigned char *}' [-Wformat=]
+../Core/Src/main.c:686:11: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint8_t * {aka unsigned char *}' [-Wformat=]
   printf("%d\r\n", mise_send_buffer);
           ~^       ~~~~~~~~~~~~~~~~
           %hhn
@@ -39,7 +39,7 @@ arm-none-eabi-objdump -h -S  nucleo.elf  > "nucleo.list"
 arm-none-eabi-objcopy  -O binary  nucleo.elf  "nucleo.bin"
 arm-none-eabi-size   nucleo.elf 
    text	   data	    bss	    dec	    hex	filename
-  22132	    128	   3176	  25436	   635c	nucleo.elf
+  20740	    124	   3260	  24124	   5e3c	nucleo.elf
 Finished building: default.size.stdout
  
 Finished building: nucleo.bin
@@ -47,5 +47,5 @@ Finished building: nucleo.bin
 Finished building: nucleo.list
  
 
-17:51:34 Build Finished. 0 errors, 5 warnings. (took 1s.835ms)
+17:06:26 Build Finished. 0 errors, 5 warnings. (took 1s.941ms)
 
