@@ -1,6 +1,0 @@
-#include "main.h"
-#include "led.h"
-
-void led_on(port, pin, set) {
-	HAL_GPIO_WritePin(port, pin, set);
-}

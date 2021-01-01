@@ -1,0 +1,20 @@
+16:34:57 **** Incremental Build of configuration Debug for project DTS_Test ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/wiring.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F072xB -DDEBUG -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/wiring.d" -MT"Core/Src/wiring.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/wiring.o"
+arm-none-eabi-gcc "../Core/Src/wiringSPI.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F072xB -DDEBUG -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/wiringSPI.d" -MT"Core/Src/wiringSPI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/wiringSPI.o"
+In file included from ../Core/Src/wiring.c:60:0:
+../Core/Inc/poll.h:40:10: fatal error: nuttx/config.h: No such file or directory
+ #include <nuttx/config.h>
+          ^~~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [Core/Src/subdir.mk:51: Core/Src/wiring.o] Error 1
+make: *** Waiting for unfinished jobs....
+../Core/Src/wiringSPI.c:32:10: fatal error: sys/ioctl.h: No such file or directory
+ #include <sys/ioctl.h>
+          ^~~~~~~~~~~~~
+compilation terminated.
+make: *** [Core/Src/subdir.mk:53: Core/Src/wiringSPI.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+
+16:34:58 Build Failed. 5 errors, 0 warnings. (took 853ms)
+

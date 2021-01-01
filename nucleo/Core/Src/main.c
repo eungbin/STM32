@@ -35,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -207,17 +208,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, SET);
-//	  HAL_Delay(10000);
-//	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, RESET);
-//	  HAL_Delay(20000);
+	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, SET);
+	  HAL_GPIO_WritePin(Relay2_GPIO_Port, Relay2_Pin, SET);
+	  HAL_Delay(5000);
+	  HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, RESET);
+	  HAL_GPIO_WritePin(Relay2_GPIO_Port, Relay2_Pin, RESET);
+	  HAL_Delay(20000);
 
-	  status_lcd = displayInit(&hi2c1);
-	  if (HAL_GPIO_ReadPin(Sensor_GPIO_Port, Sensor_Pin))
-		  displayWriteString("Detected!!!");
-	  else
-		  displayWriteString("No Detected...");
-	  HAL_Delay(500);
+//	  status_lcd = displayInit(&hi2c1);
+//	  if (HAL_GPIO_ReadPin(Sensor_GPIO_Port, Sensor_Pin))
+//		  displayWriteString("Detected!!!");
+//	  else
+//		  displayWriteString("No Detected...");
+//	  HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -493,7 +496,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1|URLED2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1|URLED2_Pin|Relay2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, GPIO_PIN_RESET);
@@ -504,8 +507,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(URBTN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA1 URLED2_Pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|URLED2_Pin;
+  /*Configure GPIO pins : PA1 URLED2_Pin Relay2_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|URLED2_Pin|Relay2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

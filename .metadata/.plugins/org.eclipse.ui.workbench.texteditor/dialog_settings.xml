@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="hi2c1"/>
+		<item key="selection" value="sprintf"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="sprintf"/>
+			<item value="pir_status"/>
+			<item value="test"/>
+			<item value="TIM6"/>
+			<item value="TIM"/>
+			<item value="TIM7"/>
 			<item value="hi2c1"/>
 			<item value="hi"/>
 			<item value="hu"/>
@@ -17,12 +23,6 @@
 			<item value="PV"/>
 			<item value="35"/>
 			<item value="displayCreateChar"/>
-			<item value="write_MISE"/>
-			<item value="MX_GPIO_Init"/>
-			<item value="GPIO_Init"/>
-			<item value="GPIO"/>
-			<item value="|"/>
-			<item value="TIM16_Init"/>
 		</list>
 		<list key="replacehistory">
 			<item value="HAL_Delay"/>

@@ -165,13 +165,12 @@ void StartDefaultTask(void const * argument)
 /* USER CODE BEGIN Application */
 void vTask1( void *pvParameters )
 {
-	if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
-	{
-		printf("fail\r\n");
-	}
-
-
-	write_MISE("Passive");
+//	if(HAL_UART_Receive_DMA(&huart3,mise_buffer,32)!=HAL_OK)
+//	{
+//		printf("fail\r\n");
+//	}
+//
+//	write_MISE("Passive");
 	/* infinite loop. */
 	for( ;; )
 	{
@@ -186,22 +185,22 @@ void vTask2( void *pvParameters )
 	for( ;; )
 	{
 		displayInit(&hi2c1);
-		if(!pir_status) {
-			displayWriteString("PM2.5 : ");
-			displayWriteString(s_pm2_5);
-			displaySetCursor(0, 1);
-			displayWriteString("PM10  : ");
-			displayWriteString(s_pm10);
-		} else {
-			displayWriteString("CO2 : ");
-			displayWriteString(co2_result_buffer);
-		}
-		counter++;
-		if(counter >= 5) {
-			counter = 0;
-			pir_status = ~pir_status;
-		}
-//		printf("TEST\r\n");
+//		if(!pir_status) {
+//			displayWriteString("PM2.5 : ");
+//			displayWriteString(s_pm2_5);
+//			displaySetCursor(0, 1);
+//			displayWriteString("PM10  : ");
+//			displayWriteString(s_pm10);
+//		} else {
+//			displayWriteString("CO2 : ");
+//			displayWriteString(co2_result_buffer);
+//		}
+//		counter++;
+//		if(counter >= 5) {
+//			counter = 0;
+//			pir_status = ~pir_status;
+//		}
+////		printf("TEST\r\n");
 		HAL_Delay(1000);
 	}
 }
@@ -307,18 +306,19 @@ void write_MISE(char* cmd)
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	if(huart->Instance == USART3) {
-		print_MISE();
-		sprintf(s_pm2_5, "%d", pm2_5);
-		sprintf(s_pm10, "%d", pm10);
-	}
+//	if(huart->Instance == USART3) {
+//		print_MISE();
+//		sprintf(s_pm2_5, "%d", pm2_5);
+//		sprintf(s_pm10, "%d", pm10);
+//	}
 
-	if(huart->Instance == USART4) {
-		for(int i=0; i<9; i++) {
-			co2_result_buffer[i] = co2_buffer[i+1];
-		}
-		printf("%s\r\n", co2_result_buffer);
-	}
+//	if(huart->Instance == USART4) {
+//		for(int i=0; i<9; i++) {
+//			co2_result_buffer[i] = co2_buffer[i+1];
+//		}
+//		printf("%s\r\n", co2_result_buffer);
+//
+//	}
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)

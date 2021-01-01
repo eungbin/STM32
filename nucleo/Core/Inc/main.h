@@ -65,6 +65,8 @@ extern uint8_t intFlag;
 #define URLED2_GPIO_Port GPIOA
 #define Sensor_Pin GPIO_PIN_9
 #define Sensor_GPIO_Port GPIOA
+#define Relay2_Pin GPIO_PIN_10
+#define Relay2_GPIO_Port GPIOA
 #define Relay_Pin GPIO_PIN_5
 #define Relay_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

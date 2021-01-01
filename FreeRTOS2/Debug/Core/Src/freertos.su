@@ -2,8 +2,8 @@ freertos.c:92:6:vApplicationGetIdleTaskMemory	24	static
 freertos.c:106:6:MX_FREERTOS_Init	56	static
 freertos.c:153:6:StartDefaultTask	16	static
 freertos.c:166:6:vTask1	16	static
-freertos.c:182:6:vTask2	16	static
-freertos.c:208:6:print_MISE	16	static
-freertos.c:237:6:write_MISE	24	static
-freertos.c:308:6:HAL_UART_RxCpltCallback	24	static
-freertos.c:323:6:HAL_UART_TxCpltCallback	16	static
+freertos.c:183:6:vTask2	16	static
+freertos.c:210:6:print_MISE	16	static
+freertos.c:239:6:write_MISE	24	static
+freertos.c:310:6:HAL_UART_RxCpltCallback	16	static
+freertos.c:326:6:HAL_UART_TxCpltCallback	16	static

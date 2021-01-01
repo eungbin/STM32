@@ -1,19 +1,11 @@
-16:37:10 **** Incremental Build of configuration Debug for project FreeRTOS2 ****
+18:21:24 **** Incremental Build of configuration Debug for project FreeRTOS2 ****
 make -j8 all 
 arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F072xB -DDEBUG -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
-../Core/Src/freertos.c: In function 'vTask2':
-../Core/Src/freertos.c:196:23: warning: pointer targets in passing argument 1 of 'displayWriteString' differ in signedness [-Wpointer-sign]
-    displayWriteString(co2_result_buffer);
-                       ^~~~~~~~~~~~~~~~~
-In file included from ../Core/Src/freertos.c:30:0:
-../Core/Inc/SerLCD.h:84:9: note: expected 'char *' but argument is of type 'uint8_t * {aka unsigned char *}'
- uint8_t displayWriteString(char *buffer);
-         ^~~~~~~~~~~~~~~~~~
 ../Core/Src/freertos.c: In function 'write_MISE':
-../Core/Src/freertos.c:243:5: warning: implicit declaration of function 'strcmp' [-Wimplicit-function-declaration]
+../Core/Src/freertos.c:245:5: warning: implicit declaration of function 'strcmp' [-Wimplicit-function-declaration]
   if(strcmp(cmd,"Read")==0)
      ^~~~~~
-../Core/Src/freertos.c:305:11: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint8_t * {aka unsigned char *}' [-Wformat=]
+../Core/Src/freertos.c:307:11: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint8_t * {aka unsigned char *}' [-Wformat=]
   printf("%d\r\n", mise_send_buffer);
           ~^       ~~~~~~~~~~~~~~~~
           %hhn
@@ -24,7 +16,7 @@ arm-none-eabi-objdump -h -S  FreeRTOS2.elf  > "FreeRTOS2.list"
 arm-none-eabi-objcopy  -O binary  FreeRTOS2.elf  "FreeRTOS2.bin"
 arm-none-eabi-size   FreeRTOS2.elf 
    text	   data	    bss	    dec	    hex	filename
-  29776	    132	   6412	  36320	   8de0	FreeRTOS2.elf
+  24208	    124	   6396	  30728	   7808	FreeRTOS2.elf
 Finished building: default.size.stdout
  
 Finished building: FreeRTOS2.bin
@@ -32,5 +24,5 @@ Finished building: FreeRTOS2.bin
 Finished building: FreeRTOS2.list
  
 
-16:37:12 Build Finished. 0 errors, 3 warnings. (took 2s.187ms)
+18:21:27 Build Finished. 0 errors, 2 warnings. (took 2s.142ms)
 
