@@ -1,0 +1,14 @@
+/*
+ * mise.h
+ *
+ *  Created on: 2021. 1. 2.
+ *      Author: kim
+ */
+
+#ifndef INC_MISE_H_
+#define INC_MISE_H_
+
+void print_MISE(void);
+void write_MISE(char* cmd);
+
+#endif /* INC_MISE_H_ */

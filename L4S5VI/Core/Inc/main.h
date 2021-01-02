@@ -65,12 +65,20 @@ void Error_Handler(void);
 #define CO2_TX_GPIO_Port GPIOA
 #define CO2_RX_Pin GPIO_PIN_1
 #define CO2_RX_GPIO_Port GPIOA
+#define SCE_Pin GPIO_PIN_4
+#define SCE_GPIO_Port GPIOA
 #define PIR_Pin GPIO_PIN_0
 #define PIR_GPIO_Port GPIOB
+#define GREEN_Pin GPIO_PIN_1
+#define GREEN_GPIO_Port GPIOB
 #define Relay_Pin GPIO_PIN_2
 #define Relay_GPIO_Port GPIOB
 #define Relay2_Pin GPIO_PIN_14
 #define Relay2_GPIO_Port GPIOD
+#define RED_Pin GPIO_PIN_15
+#define RED_GPIO_Port GPIOA
+#define YELLOW_Pin GPIO_PIN_4
+#define YELLOW_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
